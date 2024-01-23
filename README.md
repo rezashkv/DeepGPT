@@ -1,5 +1,5 @@
 # DeepGPT
-This repository contains the code implementation related to the paper "Deep Prompt Tuning for Graph Transformers"
+This repository contains the implementation related to the paper "Deep Prompt Tuning for Graph Transformers"
 
 ## Installation
 
