@@ -1,0 +1,80 @@
+out_dir: /home/reza/research/results/GraphGPS/gps-metstab-finetune
+metric_best: auc
+accelerator: cuda
+devices: 1
+wandb:
+  use: false
+  project: metstab
+dataset:
+  cache_load: true
+  cache_save: true
+  dir: /home/reza/research/data/GraphGPS/
+  format: PyG
+  name: Moleculenet-Metstab
+  split_mode: cv-kfold-5
+  split_dir: /home/reza/research/data/GraphGPS/splits/
+  task: graph
+  task_type: classification_multilabel
+  transductive: False
+  node_encoder: True
+  node_encoder_name: SimpleAtom+RWSE
+  node_encoder_bn: True
+  edge_encoder: True
+  edge_encoder_name: SimpleBond
+  edge_encoder_bn: True
+pe_simple:
+  enable: True
+  atom_feats: 9
+  bond_feats: 3
+posenc_RWSE:
+  enable: True
+  kernel:
+    times_func: range(1,17)
+  model: Linear
+  dim_pe: 20
+  raw_norm_type: BatchNorm
+pretrained:
+  dir: /home/reza/research/results/GraphGPS/gps-pcq-performer-large/pcqm4m-gps-performer
+  reset_prediction_head: False
+train:
+  auto_resume: false
+  mode: custom
+  batch_size: 32
+  eval_period: 1
+  ckpt_period: 100
+  ckpt_best: true
+model:
+  type: GPSModel
+  loss_fun: cross_entropy
+  edge_decoding: dot
+  graph_pooling: mean
+gt:
+  layer_type: CustomGatedGCN+Performer
+  layers: 12
+  n_heads: 16
+  dim_hidden: 768  # `gt.dim_hidden` must match `gnn.dim_inner`
+  dropout: 0.1
+  attn_dropout: 0.1
+  layer_norm: False
+  batch_norm: True
+prefix:
+  enable: False
+  prefix_projection: False
+  pre_seq_len: 10
+gnn:
+  head: san_graph
+  layers_pre_mp: 0
+  layers_post_mp: 3  # Not used when `gnn.head: san_graph`
+  dim_inner: 768  # `gt.dim_hidden` must match `gnn.dim_inner`
+  batchnorm: True
+  act: relu
+  dropout: 0.0
+optim:
+  clip_grad_norm: True
+  optimizer: adamW
+  weight_decay: 0.0
+  base_lr: 0.001
+  max_epoch: 100
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5
+

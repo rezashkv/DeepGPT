@@ -1,0 +1,74 @@
+out_dir: /home/reza/research/results/GraphGPS/san-pcqm
+metric_best: mae
+metric_agg: argmin
+accelerator: cuda
+devices: 2
+wandb:
+  use: False
+  project: pcqm4m-san
+dataset:
+  cache_load: true
+  cache_save: true
+  dir: /home/reza/research/data/GraphGPS/
+  format: OGB
+  name: PCQM4Mv2-full
+  task: graph
+  task_type: regression
+  resample_negative: True
+  transductive: False
+  node_encoder: True
+  node_encoder_name: Atom+LapPE
+  node_encoder_bn: False
+  edge_encoder: True
+  edge_encoder_name: Bond
+  edge_encoder_bn: False
+posenc_LapPE:
+  enable: True
+  eigen:
+    laplacian_norm: sym
+    eigvec_norm: L2
+    max_freqs: 10
+  model: Transformer
+  dim_pe: 16
+  layers: 2
+  n_heads: 4  # Only used when `posenc.model: Transformer`
+  raw_norm_type: none
+train:
+  mode: custom
+  batch_size: 1024
+  eval_period: 1
+  ckpt_best: True
+model:
+  type: SANTransformer
+  loss_fun: l1
+  edge_decoding: dot
+  graph_pooling: add
+gt:
+  layers: 12
+  n_heads: 16
+  dim_hidden: 768  # `gt.dim_hidden` must match `gnn.dim_inner`
+  full_graph: True
+  gamma: 1e-6
+  dropout: 0.01
+  layer_norm: False
+  batch_norm: True
+  residual: True
+gnn:
+  head: san_graph
+  layers_pre_mp: 0
+  layers_post_mp: 3  # Not used when `gnn.head: san_graph`
+  dim_inner: 768  # `gt.dim_hidden` must match `gnn.dim_inner`
+  batchnorm: True
+  act: relu
+  dropout: 0.0
+  agg: mean
+  normalize_adj: False
+optim:
+  optimizer: adamW
+  weight_decay: 0.0
+  base_lr: 0.005
+  max_epoch: 50
+  scheduler: reduce_on_plateau
+  reduce_factor: 0.5
+  schedule_patience: 20
+  min_lr: 1e-5

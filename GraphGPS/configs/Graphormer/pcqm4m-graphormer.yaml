@@ -1,0 +1,70 @@
+out_dir: /home/reza/research/results/GraphGPS/graphormer-pcq-large
+metric_best: mae
+metric_agg: argmin
+accelerator: cuda
+devices: 2
+wandb:
+  use: False
+  project: pcqm4m
+dataset:
+  cache_load: true
+  cache_save: true
+  dir: /home/reza/research/data/GraphGPS/
+  format: OGB
+  name: PCQM4Mv2-subset
+  split_mode: random
+  split_dir: /home/reza/research/data/GraphGPS/splits/
+  task: graph
+  edge_encoder_num_types: 14
+  task_type: regression
+  transductive: False
+  node_encoder: True
+  node_encoder_name: LinearNode+GraphormerBias
+  node_encoder_bn: False
+  edge_encoder: False
+  edge_encoder_name: DummyEdge
+  edge_encoder_bn: False
+posenc_GraphormerBias:
+  enable: True
+  node_degrees_only: False
+  num_spatial_types: 20
+  num_in_degrees: 9
+  num_out_degrees: 64
+train:
+  mode: custom
+  batch_size: 512
+  eval_period: 1
+  ckpt_best: True
+#  ckpt_period: 100
+model:
+  type: Graphormer
+  loss_fun: cross_entropy
+  edge_decoding: dot
+  graph_pooling: graph_token
+graphormer:
+  num_layers: 12
+  num_heads: 32
+  embed_dim: 768
+  dropout: 0.0
+  attention_dropout: 0.1
+  mlp_dropout: 0.1
+  input_dropout: 0.1
+gnn:
+  head: graphormer_graph
+  layers_pre_mp: 0
+  layers_post_mp: 3  # Not used when `gnn.head: san_graph`
+  dim_inner: 768  # `gt.dim_hidden` must match `gnn.dim_inner`
+  batchnorm: True
+  act: relu
+  dropout: 0.0
+  agg: mean
+  normalize_adj: False
+optim:
+  clip_grad_norm: True
+  clip_grad_norm_value: 5.0
+  optimizer: adamW
+  weight_decay: 1e-5
+  base_lr: 0.01
+  max_epoch: 50
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 10
