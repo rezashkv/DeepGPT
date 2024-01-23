@@ -1,6 +1,6 @@
 # DeepGPT
 This repository contains the implementation related to the paper ["Deep Prompt Tuning for Graph Transformers"](https://arxiv.org/abs/2309.10131).
-The code is built on top of [Ptuning-v2](https://github.com/THUDM/P-tuning-v2) and [GraphGPS](https://github.com/rampasek/GraphGPS).
+The code is built on top of [P-tuning v2](https://github.com/THUDM/P-tuning-v2) and [GraphGPS](https://github.com/rampasek/GraphGPS).
 
 ## Installation
 
